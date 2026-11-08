@@ -33,7 +33,7 @@ Against real Google: copy `.env.example` to `.env.local`, fill it in, `npm run d
 
 Pushing to `main` runs `.github/workflows/deploy.yml`. It needs:
 - secret `FIREBASE_SERVICE_ACCOUNT` (from `firebase init hosting:github`)
-- repo variables `FIREBASE_API_KEY`, `FIREBASE_PROJECT_ID`, `FIREBASE_APP_ID`,
+- repo variables `FIREBASE_AUTH_DOMAIN` (hundred.mcqueen.io once the domain is live, else <project>.firebaseapp.com), `FIREBASE_API_KEY`, `FIREBASE_PROJECT_ID`, `FIREBASE_APP_ID`,
   `FIREBASE_MESSAGING_SENDER_ID`, `DRIVE_API_KEY`
 
 Firestore rules deploy with `npm run deploy` (`firebase deploy --only hosting,firestore`).
