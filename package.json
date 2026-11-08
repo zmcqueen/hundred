@@ -1,0 +1,22 @@
+{
+  "name": "hundred",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "emulate": "firebase emulators:start --only auth,firestore --project demo-hundred",
+    "dev:emulator": "vite --mode emulator",
+    "fake-drive": "node scripts/fake-drive.mjs",
+    "deploy": "vite build && firebase deploy --only hosting,firestore"
+  },
+  "dependencies": {
+    "firebase": "^11.10.0"
+  },
+  "devDependencies": {
+    "firebase-tools": "^14.27.0",
+    "vite": "^6.4.5"
+  }
+}

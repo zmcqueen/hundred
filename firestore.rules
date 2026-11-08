@@ -1,0 +1,39 @@
+rules_version = '2';
+// The board index only. No media ever lands here: just number -> Drive file IDs.
+service cloud.firestore {
+  match /databases/{db}/documents {
+    function signedIn() { return request.auth != null; }
+    function isPlayer(gameId) {
+      return exists(/databases/$(db)/documents/games/$(gameId)/players/$(request.auth.uid));
+    }
+
+    match /games/{gameId} {
+      // Game IDs are unguessable; the invite link is the key. No listing.
+      allow get: if signedIn();
+      allow list: if false;
+      allow create: if signedIn()
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.max is int
+        && request.resource.data.max >= 1 && request.resource.data.max <= 1000;
+      allow update, delete: if signedIn() && resource.data.createdBy == request.auth.uid;
+
+      match /players/{uid} {
+        allow read: if signedIn() && isPlayer(gameId);
+        allow create, update: if signedIn() && uid == request.auth.uid;
+      }
+
+      match /captures/{captureId} {
+        allow read: if signedIn() && isPlayer(gameId);
+        allow create: if signedIn() && isPlayer(gameId)
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.number is int
+          && request.resource.data.number >= 1
+          && request.resource.data.number <= get(/databases/$(db)/documents/games/$(gameId)).data.max;
+        allow update: if signedIn() && resource.data.uid == request.auth.uid
+          && request.resource.data.uid == resource.data.uid
+          && request.resource.data.number == resource.data.number;
+        allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+      }
+    }
+  }
+}
